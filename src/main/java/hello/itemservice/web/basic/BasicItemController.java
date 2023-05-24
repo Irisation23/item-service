@@ -88,16 +88,41 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV4(Item item) {
         // ModelAttribute를 지우면?
         // 역시 Item -> item 으로 치환해서 모델에 가지고 있다. 고로 위에서 작동한 동작과 같다.
         // 주의할 점은 영한 햄은 보다 명시해 주는걸 선호한다.
         itemRepository.save(item);
 
-
-
         return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV5(Item item) {
+        // ModelAttribute를 지우면?
+        // 역시 Item -> item 으로 치환해서 모델에 가지고 있다. 고로 위에서 작동한 동작과 같다.
+        // 주의할 점은 영한 햄은 보다 명시해 주는걸 선호한다.
+        itemRepository.save(item);
+
+        return "redirect:/basic/items/" + item.getId();
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable Long itemId, Model model) {
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+
+        return "basic/editForm";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId,
+                       @ModelAttribute Item item) {
+
+        itemRepository.update(itemId, item);
+
+        return "redirect:/basic/items/{itemId}";
     }
 
     @PostConstruct
